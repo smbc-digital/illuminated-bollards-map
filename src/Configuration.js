@@ -1,5 +1,6 @@
-import { developablesitesPopup, permissionedPopup, notassessedPopup, tclaPopup} from './Popups' //devsitesPopup, notdevsitesPopup}
-import { developablesitesStyle, tcwmdcStyle, greenbeltStyle, floodzonesStyle, allsubmittedStyle, permissionedStyle, notassessedStyle, tclaStyle} from './Styles'
+import Leaflet from 'leaflet'
+import { illuminatedbollardPopup} from './Popups' //devsitesPopup, notdevsitesPopup}
+import { illuminatedbollardStyle} from './Styles'
 
 const Configuration = {
     Map: {
@@ -27,98 +28,20 @@ const Configuration = {
         //},
 
         {
-            key: 'Green Belt',
-            url: 'https://spatial.stockport.gov.uk/geoserver/wfs?service=WFS&version=1.1.0&request=GetFeature&typeName=planning:green_belt_os&outputFormat=application/json&bbox={0},EPSG:4326&srsName=EPSG:4326',
+            key: 'Illuminated Bollards',
+            url: 'https://spatial.stockport.gov.uk/geoserver/wfs?service=WFS&version=1.1.0&request=GetFeature&typeName=highway_assets:illuminated_bollard_reporting&outputFormat=application/json&bbox={0},EPSG:4326&srsName=EPSG:4326',
             layerOptions: {
-                maxZoom: 2,
-                style: greenbeltStyle
+                maxZoom: 16,
+                onEachFeature: illuminatedbollardPopup,
+                pointToLayer: (feature, latlng) => {
+                    return Leaflet.circleMarker (latlng, illuminatedbollardStyle (feature))
+
+                }
             },
             displayOverlay: true,
             visibleByDefault: true
         },
         
-        {
-            key: 'Flood Risk Zones',
-            url: 'https://spatial.stockport.gov.uk/geoserver/wfs?service=WFS&version=1.1.0&request=GetFeature&typeName=flooding:flood_zones&outputFormat=application/json&bbox={0},EPSG:4326&srsName=EPSG:4326',
-            layerOptions: {
-                maxZoom: 2,
-                style: floodzonesStyle
-            },
-            displayOverlay: true,
-            visibleByDefault: true
-        },
-
-        {
-            key: 'Town Centre Living Area',
-            url: 'https://spatial.stockport.gov.uk/geoserver/wfs?service=WFS&version=1.1.0&request=GetFeature&typeName=planning:shlaa2020_tcla&outputFormat=application/json&bbox={0},EPSG:4326&srsName=EPSG:4326',
-            layerOptions: {
-                onEachFeature: tclaPopup,    
-                maxZoom: 2,
-                style: tclaStyle
-            },
-            displayOverlay: true,
-            visibleByDefault: true
-        },       
-        
-        {
-            key: 'Town Centre West Mayoral Development Corporation Area',
-            url: 'https://spatial.stockport.gov.uk/geoserver/wfs?service=WFS&version=1.1.0&request=GetFeature&typeName=planning:town_centre_west_mdc&outputFormat=application/json&bbox={0},EPSG:4326&srsName=EPSG:4326',
-            layerOptions: {
-                maxZoom: 2,
-                style: tcwmdcStyle
-            },
-            displayOverlay: true,
-            visibleByDefault: true
-        },
-
-        {
-            key: 'Sites with plannning permission for housing',
-            url: 'https://spatial.stockport.gov.uk/geoserver/wfs?service=WFS&version=1.1.0&request=GetFeature&typeName=planning:schema2020_resi_permissioned&outputFormat=application/json&bbox={0},EPSG:4326&srsName=EPSG:4326',
-            layerOptions: {
-                onEachFeature: permissionedPopup,
-                maxZoom: 2,
-                style: permissionedStyle
-            },
-            displayOverlay: true,
-            visibleByDefault: true
-        },
-
-        {
-            key: 'All sites considered in SHLAA 2020',
-            url: 'https://spatial.stockport.gov.uk/geoserver/wfs?service=WFS&version=1.1.0&request=GetFeature&typeName=planning:shlaa2020_allsites&outputFormat=application/json&bbox={0},EPSG:4326&srsName=EPSG:4326',
-            layerOptions: {
-                maxZoom: 2,
-                style: allsubmittedStyle
-            },
-            displayOverlay: true,
-            visibleByDefault: false
-        },
-
-        {
-            key: 'Developable sites SHLAA 2020',
-            url: 'https://spatial.stockport.gov.uk/geoserver/wfs?service=WFS&version=1.1.0&request=GetFeature&typeName=planning:shlaa2020_sites&outputFormat=application/json&bbox={0},EPSG:4326&srsName=EPSG:4326',
-            layerOptions: {
-                onEachFeature: developablesitesPopup,
-                maxZoom: 2,
-                style: developablesitesStyle
-
-            },
-            displayOverlay: true,
-            visibleByDefault: true
-        },
-
-        {
-            key: 'Sites that did not pass first sift of SHLAA 2020',
-            url: 'https://spatial.stockport.gov.uk/geoserver/wfs?service=WFS&version=1.1.0&request=GetFeature&typeName=planning:shlaa2020_not_assessed&outputFormat=application/json&bbox={0},EPSG:4326&srsName=EPSG:4326',
-            layerOptions: {
-                onEachFeature: notassessedPopup,
-                maxZoom: 2,
-                style: notassessedStyle
-            },
-            displayOverlay: true,
-            visibleByDefault: false
-        },
-
         {
             key: 'os1250_line',
             url: 'http://spatial.stockport.gov.uk/geoserver/wms?',

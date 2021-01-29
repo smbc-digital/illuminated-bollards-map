@@ -1,75 +1,65 @@
-const developablesitesPopup = (feature, layer) => {
-  
-  const content = `<div class="item"><i class="fa fa-home" aria-hidden="true"></i><p class="title">Developable sites SHLAA 2020</p>
-  <p></p>
-  <p class="info">Site Address: ${feature.properties.site_address}</p>
-  <p class="info">Site Description: ${feature.properties.site_description_2020}</p>
-  <p class="info">Site Area (Ha): ${feature.properties.site_area}</p>
-  <p class="info">Site Capacity: ${feature.properties.capacity}</p>
-  <p class="info">Delivery Years: ${feature.properties.delivery_years}</p>
-  
-  </div>`
- 
-  layer.bindPopup(content)
- }
+import { getTargetUrl } from '../Helpers'
 
- const tclaPopup = (feature, layer) => {
-  
-  const content = `<div class="item"><i class="fa fa-home" aria-hidden="true"></i><p class="title">Town Centre Living Area</p>
-  <p></p>
-  <p class="info">Site Address: ${feature.properties.site_address}</p>
-  <p class="info">Site Description: ${feature.properties.site_description_2020}</p>
-  <p class="info">Site Area (Ha): ${feature.properties.site_area}</p>
-  <p class="info">Site Capacity: ${feature.properties.capacity}</p>
-  <p class="info">Delivery Years: ${feature.properties.delivery_years}</p>
-  
-  </div>`
- 
-  layer.bindPopup(content)
- }
+const bollardActivePopup = feature => {
+  const varName = getTargetUrl()
 
- const conservationPopup = (feature, layer) => {
-  
-  const content = `<div class="item"><i class="fa fa-home" aria-hidden="true"></i><p class="title">Conservation Area</p>
-  <p></p>
-  <p class="info">Name: ${feature.properties.cons_area}</p>
-  
-  </div>`
- 
-  layer.bindPopup(content)
- }
+  return `<div class="item"><i class="tag fa fa-map-marker"></i><p class="title">Location </p><p class="info">${feature.properties.location_description}</p></div><hr/>
+  <div class="item"><i class="tag fa fa-tag"></i><p class="title">Number on bollard </p><p class="info">${feature.properties.feature_id}</p></div>
+  <a class="button-primary" href="${varName}/street-lighting/report-an-issue/fault-type?assetId=${feature.properties.central_asset_id}&siteCode=${feature.properties.site_code}">Report this bollard</a>`
+}
 
- const permissionedPopup = (feature, layer) => {
-  
-  const content = `<div class="item"><i class="fa fa-home" aria-hidden="true"></i><p class="title">Sites with planning permission for housing</p>
-  <p></p>
-  <p class="info">Site Address: ${feature.properties.site_address}</p>
-  <p class="info">Site Area (Ha): ${feature.properties.site_area}</p>
-  <p class="info">Site Net Capacity: ${feature.properties.net_capacity}</p>
-  <p class="info">Delivery Years: ${feature.properties.delivery_years}</p>
-  
-  </div>`
- 
-  layer.bindPopup(content)
- }
+const bollardFaultPopup = feature => {
+ const varName = getTargetUrl()
+ let noOfDays = Math.floor(
+   (new Date() - new Date(feature.properties.job_entry_date)) /
+     (1000 * 3600 * 24)
+ )
+ let lastUpdated = Math.floor(
+   (new Date() - new Date(feature.properties.logged_date)) / (1000 * 3600 * 24)
+ )
+ const defaultMessage = noOfDays
+   ? `A fault with this bollard was reported ${noOfDays} days ago`
+   : 'A fault with this bollard was reported'
+ const showLastUpdated = lastUpdated
+   ? `<div class="last-updated">Last updated ${lastUpdated} days ago</div>`
+   : ''
 
- const notassessedPopup = (feature, layer) => {
-  
-  const content = `<div class="item"><i class="fa fa-list" aria-hidden="true"></i><p class="title">Sites that did not pass first sift of SHLAA 2020</p>
-  <p></p>
-  <p class="info">Site Address: ${feature.properties.site_address}</p>
-  <p class="info">${feature.properties.website_map_text}</p>
+ return `<div class="item"><i class="tag fa fa-map-marker"></i><p class="title">Location </p><p class="info">${feature.properties.location_description}</p></div><hr>
+    <div class="item"><i class="tag fa fa-tag"></i><p class="title">Number on bollard </p><p class="info">${feature.properties.feature_id}</p></div>
+    <div class= "message-fault">${defaultMessage}</div>
+    <a class="button-primary" href="${varName}/track-a-report/details/${feature.properties.ext_system_ref}">View reported fault</a>
+    ${showLastUpdated}`
 
-  
-  </div>`
- 
+}
+
+const bollardMaintenancePopup = feature => {
+ const message =
+   feature.properties.message ??
+   'This bollard is part of a maintenance programme and will be fixed without a need to report'
+
+ return`<div class="item"><span class="iconify" data-icon="fa-map-marker" data-inline="false"></span></i><p class="title">Location </p><p class="info">${feature.properties.location_description}</p></div><hr>
+    <div class="item"><i class="tag fa fa-tag"></i><p class="title">Number on bollard </p><p class="info">${feature.properties.feature_id}</p></div>
+    <div class= "message-maintenance">${message}</div>`
+
+}
+
+const illuminatedbollardPopup = (feature, layer) => {
+  var content = getcontent_bollard(feature)
+
   layer.bindPopup(content)
- }
+}
+
+const getcontent_bollard = feature => {
+  switch  (feature.properties.raise_new_job) {  
+    case 1:
+        return bollardActivePopup(feature)
+    case 2:
+        return bollardMaintenancePopup(feature)
+    case 3:
+        return bollardFaultPopup(feature)    
+  }
+}
 
 export {
-  developablesitesPopup,
-  conservationPopup,
-  permissionedPopup,
-  notassessedPopup,
-  tclaPopup
+  illuminatedbollardPopup 
 }
