@@ -5,7 +5,7 @@ const bollardActivePopup = feature => {
 
   return `<div class="item"><i class="tag fa fa-map-marker"></i><p class="title">Location </p><p class="info">${feature.properties.location_description}</p></div><hr/>
   <div class="item"><i class="tag fa fa-tag"></i><p class="title">Number on bollard </p><p class="info">${feature.properties.feature_id}</p></div>
-  <a class="button-primary" href="report-an-issue/lit-bollard/fault-type?assetId=${feature.properties.central_asset_id}&siteCode=${feature.properties.site_code}">Report this bollard</a>`
+  <a class="button-primary" href="lit-bollard/fault-type?assetId=${feature.properties.central_asset_id}&siteCode=${feature.properties.site_code}">Report this bollard</a>`
 }
 
 const bollardFaultPopup = feature => {
